@@ -13,7 +13,7 @@ class PairingSkill(MycroftSkill):
 
     def initialize(self):
         intent = IntentBuilder("PairingIntent").require(
-            "DevicePairingPhrase").build()
+                "DevicePairingPhrase").build()
         self.load_data_files(dirname(__file__))
         self.register_intent(intent, handler=self.handle_pairing_request)
 
@@ -21,10 +21,10 @@ class PairingSkill(MycroftSkill):
         pairing_client = DevicePairingClient()
         pairing_code = pairing_client.pairing_code
         threading.Thread(target=pairing_client.run).start()
-        self.enclosure.mouth_text("Pairing code is: " + pairing_code)
         self.speak_dialog(
-            "pairing.instructions",
-            data={"pairing_code": ', ,'.join(pairing_code)})
+                "pairing.instructions",
+                data={"pairing_code": ', ,'.join(pairing_code)})
+        self.enclosure.mouth_text("Pairing code is: " + pairing_code)
 
     def stop(self):
         pass
