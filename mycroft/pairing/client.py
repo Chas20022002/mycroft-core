@@ -1,4 +1,5 @@
 import shortuuid
+
 from mycroft.configuration.config import ConfigurationManager
 from mycroft.identity import IdentityManager
 from mycroft.messagebus.client.ws import WebsocketClient
@@ -16,6 +17,7 @@ def generate_pairing_code():
 class DevicePairingClient(object):
     def __init__(self, config=_config, pairing_code=None):
         self.config = config
+        self.paired = False
         self.ws_client = WebsocketClient(host=config.get("host"),
                                          port=config.get("port"),
                                          path=config.get("route"),
@@ -35,6 +37,7 @@ class DevicePairingClient(object):
             identity.owner = register_payload.get('user')
             self.identity_manager.update(identity)
             self.ws_client.close()
+            self.paired = True
 
     def send_device_info(self):
         msg = Message("device_info",
@@ -45,7 +48,8 @@ class DevicePairingClient(object):
 
         self.ws_client.emit(msg)
 
-    def print_error(self, message):
+    @staticmethod
+    def print_error(message):
         print(repr(message))
 
     def run(self):
@@ -57,6 +61,7 @@ class DevicePairingClient(object):
 
 def main():
     DevicePairingClient().run()
+
 
 if __name__ == "__main__":
     main()
